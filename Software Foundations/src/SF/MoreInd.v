@@ -1,6 +1,6 @@
 (** * MoreInd: More on Induction *)
 
-Require Export "ProofObjects".
+Require Export ProofObjects.
 
 (* ##################################################### *)
 (** * Induction Principles *)

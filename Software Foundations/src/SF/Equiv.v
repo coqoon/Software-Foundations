@@ -1572,24 +1572,24 @@ Notation "st1 '~' st2" := (stequiv st1 st2) (at level 30).
 
 (** **** Exercise: 1 star, optional (stequiv_refl) *)
 Lemma stequiv_refl : forall (st : state), 
-  st ~ st.
+  stequiv st st.
 Proof.
   (* FILL IN HERE *) Admitted.
 (** [] *)
 
 (** **** Exercise: 1 star, optional (stequiv_sym) *)
 Lemma stequiv_sym : forall (st1 st2 : state), 
-  st1 ~ st2 -> 
-  st2 ~ st1.
+  stequiv st1 st2 -> 
+  stequiv st2 st1.
 Proof. 
   (* FILL IN HERE *) Admitted.
 (** [] *)
    
 (** **** Exercise: 1 star, optional (stequiv_trans) *)
 Lemma stequiv_trans : forall (st1 st2 st3 : state), 
-  st1 ~ st2 -> 
-  st2 ~ st3 -> 
-  st1 ~ st3.
+  stequiv st1 st2 -> 
+  stequiv st2 st3 -> 
+  stequiv st1 st3.
 Proof.  
   (* FILL IN HERE *) Admitted.
 (** [] *)
@@ -1597,9 +1597,9 @@ Proof.
 (** Another useful fact... *)
 (** **** Exercise: 1 star, optional (stequiv_update) *)
 Lemma stequiv_update : forall (st1 st2 : state),
-  st1 ~ st2 -> 
+  stequiv st1 st2 -> 
   forall (X:id) (n:nat),
-  update st1 X n ~ update st2 X n. 
+  stequiv (update st1 X n) (update st2 X n). 
 Proof.
   (* FILL IN HERE *) Admitted.
 (** [] *)
@@ -1609,7 +1609,7 @@ Proof.
 
 (** **** Exercise: 2 stars, optional (stequiv_aeval) *)
 Lemma stequiv_aeval : forall (st1 st2 : state), 
-  st1 ~ st2 ->
+  stequiv st1 st2 ->
   forall (a:aexp), aeval st1 a = aeval st2 a. 
 Proof.
   (* FILL IN HERE *) Admitted.
@@ -1617,7 +1617,7 @@ Proof.
 
 (** **** Exercise: 2 stars, optional (stequiv_beval) *)
 Lemma stequiv_beval : forall (st1 st2 : state), 
-  st1 ~ st2 ->
+  stequiv st1 st2 ->
   forall (b:bexp), beval st1 b = beval st2 b. 
 Proof.
   (* FILL IN HERE *) Admitted.
@@ -1628,11 +1628,11 @@ Proof.
     because [ceval] is a relation). *)
 
 Lemma stequiv_ceval: forall (st1 st2 : state),
-  st1 ~ st2 ->
+  stequiv st1 st2 ->
   forall (c: com) (st1': state),
     (c / st1 || st1') ->
     exists st2' : state,
-    ((c / st2 || st2') /\  st1' ~ st2').
+    ((c / st2 || st2') /\  stequiv st1' st2').
 Proof.
   intros st1 st2 STEQV c st1' CEV1. generalize dependent st2. 
   induction CEV1; intros st2 STEQV.  
@@ -1684,7 +1684,7 @@ Reserved Notation "c1 '/' st '||'' st'" (at level 40, st at level 39).
 Inductive ceval' : com -> state -> state -> Prop :=
   | E_equiv : forall c st st' st'',
     c / st || st' -> 
-    st' ~ st'' ->
+    stequiv st' st'' ->
     c / st ||' st''
   where   "c1 '/' st '||'' st'" := (ceval' c1 st st').
 

@@ -1,6 +1,6 @@
 (** * More Logic *)
 
-Require Export "Prop".
+Require Export SF.Prop.
 
 (* ############################################################ *)
 (** * Existential Quantification *)

@@ -89,8 +89,8 @@ Check (cons nat 2 (cons nat 1 (nil nat))).
 
 Fixpoint length (X:Type) (l:list X) : nat :=
   match l with
-  | nil      => 0
-  | cons h t => S (length X t)
+  | nil _     => 0
+  | cons _ h t => S (length X t)
   end.
 
 (** Note that the uses of [nil] and [cons] in [match] patterns
@@ -99,6 +99,9 @@ Fixpoint length (X:Type) (l:list X) : nat :=
     [X] in the pattern.  (More precisely, the type [X] is a parameter
     of the whole definition of [list], not of the individual
     constructors.  We'll come back to this point later.)
+
+	JB : Note that in Coq trunk this does no longer seem to be the case, the
+         constructor does expect the element type as an argument.
 
     As with [nil] and [cons], we can use [length] by applying it first
     to a type and then to its list argument: *)
@@ -122,20 +125,20 @@ Proof. reflexivity.  Qed.
 Fixpoint app (X : Type) (l1 l2 : list X)
                 : (list X) :=
   match l1 with
-  | nil      => l2
-  | cons h t => cons X h (app X t l2)
+  | nil _     => l2
+  | cons _ h t => cons X h (app X t l2)
   end.
 
 Fixpoint snoc (X:Type) (l:list X) (v:X) : (list X) :=
   match l with
-  | nil      => cons X v (nil X)
-  | cons h t => cons X h (snoc X t v)
+  | nil _      => cons X v (nil X)
+  | cons _ h t => cons X h (snoc X t v)
   end.
 
 Fixpoint rev (X:Type) (l:list X) : list X :=
   match l with
-  | nil      => nil X
-  | cons h t => snoc X (rev X t) h
+  | nil _      => nil X
+  | cons _ h t => snoc X (rev X t) h
   end.
 
 
@@ -196,8 +199,8 @@ End MumbleBaz.
 
 Fixpoint app' X l1 l2 : list X :=
   match l1 with
-  | nil      => l2
-  | cons h t => cons X h (app' X t l2)
+  | nil _      => l2
+  | cons _ h t => cons X h (app' X t l2)
   end.
 
 (** Indeed it will.  Let's see what type Coq has assigned to [app']: *)
@@ -260,8 +263,8 @@ Check app.
 
 Fixpoint length' (X:Type) (l:list X) : nat :=
   match l with
-  | nil      => 0
-  | cons h t => S (length' _ t)
+  | nil _      => 0
+  | cons _ h t => S (length' _ t)
   end.
 
 (** In this instance, we don't save much by writing [_] instead of
