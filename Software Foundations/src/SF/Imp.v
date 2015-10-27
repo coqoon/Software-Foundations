@@ -1,5 +1,5 @@
 (** * Imp: Simple Imperative Programs *)
-
+Require Import Lists.
 (** In this chapter, we begin a new direction that will continue for
     the rest of the course.  Up to now most of our attention has been
     focused on various aspects of Coq itself, while from now on we'll
@@ -147,14 +147,14 @@ Proof. reflexivity. Qed.
 (** *** *)
 (** Similarly, evaluating a boolean expression yields a boolean. *)
 
-Fixpoint beval (b : bexp) : bool :=
+Fixpoint beval (b : bexp) : Datatypes.bool :=
   match b with
-  | BTrue       => true
-  | BFalse      => false
+  | BTrue       => Datatypes.true
+  | BFalse      => Datatypes.false
   | BEq a1 a2   => beq_nat (aeval a1) (aeval a2)
   | BLe a1 a2   => ble_nat (aeval a1) (aeval a2)
-  | BNot b1     => negb (beval b1)
-  | BAnd b1 b2  => andb (beval b1) (beval b2)
+  | BNot b1     => Datatypes.negb (beval b1)
+  | BAnd b1 b2  => Datatypes.andb (beval b1) (beval b2)
   end.
 
 (* ####################################################### *)
@@ -302,7 +302,7 @@ Qed.
 
 (** For example, consider the following trivial lemma: *)
 
-Lemma foo : forall n, ble_nat 0 n = true.
+Lemma foo : forall n, ble_nat 0 n = Datatypes.true.
 Proof.
   intros.
   destruct n.
@@ -313,7 +313,7 @@ Qed.
 
 (** We can simplify this proof using the [;] tactical: *)
 
-Lemma foo' : forall n, ble_nat 0 n = true.
+Lemma foo' : forall n, ble_nat 0 n = Datatypes.true.
 Proof.
   intros.
   destruct n; (* [destruct] the current goal *)
@@ -1095,14 +1095,14 @@ Fixpoint aeval (st : state) (a : aexp) : nat :=
   | AMult a1 a2 => (aeval st a1) * (aeval st a2)
   end.
 
-Fixpoint beval (st : state) (b : bexp) : bool :=
+Fixpoint beval (st : state) (b : bexp) : Datatypes.bool :=
   match b with
-  | BTrue       => true
-  | BFalse      => false
+  | BTrue       => Datatypes.true
+  | BFalse      => Datatypes.false
   | BEq a1 a2   => beq_nat (aeval st a1) (aeval st a2)
   | BLe a1 a2   => ble_nat (aeval st a1) (aeval st a2)
-  | BNot b1     => negb (beval st b1)
-  | BAnd b1 b2  => andb (beval st b1) (beval st b2)
+  | BNot b1     => Datatypes.negb (beval st b1)
+  | BAnd b1 b2  => Datatypes.andb (beval st b1) (beval st b2)
   end.
 
 Example aexp1 :
@@ -1114,7 +1114,7 @@ Proof. reflexivity. Qed.
 Example bexp1 :
   beval (update empty_state X 5)
         (BAnd BTrue (BNot (BLe (AId X) (ANum 4))))
-  = true.
+  = Datatypes.true.
 Proof. reflexivity. Qed.
 
 (* ####################################################### *)
@@ -1359,18 +1359,18 @@ Inductive ceval : com -> state -> state -> Prop :=
       c2 / st' || st'' ->
       (c1 ;; c2) / st || st''
   | E_IfTrue : forall st st' b c1 c2,
-      beval st b = true ->
+      beval st b = Datatypes.true ->
       c1 / st || st' ->
       (IFB b THEN c1 ELSE c2 FI) / st || st'
   | E_IfFalse : forall st st' b c1 c2,
-      beval st b = false ->
+      beval st b = Datatypes.false ->
       c2 / st || st' ->
       (IFB b THEN c1 ELSE c2 FI) / st || st'
   | E_WhileEnd : forall b st c,
-      beval st b = false ->
+      beval st b = Datatypes.false ->
       (WHILE b DO c END) / st || st
   | E_WhileLoop : forall st st' st'' b c,
-      beval st b = true ->
+      beval st b = Datatypes.true ->
       c / st || st' ->
       (WHILE b DO c END) / st' || st'' ->
       (WHILE b DO c END) / st || st''
@@ -1828,7 +1828,7 @@ Proof.
   (* FILL IN HERE *) Admitted.
 
 Theorem while_stops_on_break : forall b c st st',
-  beval st b = true ->
+  beval st b = Datatypes.true ->
   c / st || SBreak / st' ->
   (WHILE b DO c END) / st || SContinue / st'.
 Proof.
@@ -1837,7 +1837,7 @@ Proof.
 (** **** Exercise: 3 stars, advanced, optional (while_break_true) *)
 Theorem while_break_true : forall b c st st',
   (WHILE b DO c END) / st || SContinue / st' ->
-  beval st' b = true ->
+  beval st' b = Datatypes.true ->
   exists st'', c / st'' || SBreak / st'.
 Proof.
 (* FILL IN HERE *) Admitted.
